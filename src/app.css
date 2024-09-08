@@ -1,0 +1,6 @@
+/* Tutorial for setting up tailwindcss for FastHTML:
+https://medium.com/@pitvfx/fasthtml-with-tailwind-css-480b7590c79b */
+/* app.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
