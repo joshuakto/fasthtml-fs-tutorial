@@ -96,9 +96,6 @@ def render_file_list(tree: List[Tuple[str, str, str]], current_path: str) -> Div
                   href=f'/{os.path.relpath(item[2], base_dir)}' if item[0] == 'folder' else '#',
                   hx_get=f'/{os.path.relpath(item[2], base_dir)}?preview=true' if item[0] == 'file' else None,
                   hx_target='#preview-area')
-                # A(item[1], 
-                #   href=f'/{os.path.relpath(item[2], base_dir)}' if item[0] == 'folder' else '#',
-                #   onclick=f"showPreview('{os.path.relpath(item[2], base_dir)}')" if item[0] == 'file' else None)
             ),
             Td(format_size(get_file_info(item[2])[0])),
             Td(get_file_info(item[2])[2]),
@@ -145,9 +142,14 @@ def render_main_page(path: str, file_list: Div):
 
     return Title("File System Interface"), Div(
         # Search form
-        Form(action="", method="get")(
-            Input(type="text", name="search", placeholder="Search files"),
-            Input(type="submit", value="Search")
+        Input(
+            type="text",
+            name="search",
+            placeholder="Search files",
+            hx_get=f'/{path}',
+            hx_trigger="keyup changed delay:500ms",
+            hx_push_url="false",
+            hx_target="#file-list-container"
         ),
         # Breadcrumb
         Div(*breadcrumb_items),
@@ -179,7 +181,9 @@ def get(path: str = '', search: str = '', preview: bool = False, hx_request: boo
         return handle_file(path, preview)
     else:
         file_list = handle_directory(path, search)
-        if search or preview or hx_request:
+        if preview:
+            return render_preview(full_path)
+        elif hx_request:
             return file_list
         else:
             return render_main_page(path, file_list)
