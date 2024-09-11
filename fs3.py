@@ -290,4 +290,4 @@ def get(path: str = '', search: str = '', preview: bool = False, hx_request: boo
         else:
             return render_main_page(path, file_list)
 
-serve()
+serve(port=5002)
